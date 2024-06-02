@@ -1,0 +1,86 @@
+  Listagem das agências.
+select * from agencia;
+
+  Listagem de todos os bancos.
+
+select * from banco;
+
+-- Listagem dos nomes dos bancos o quais os códigos são 2 e 3
+
+Select nome from banco
+where codigo = 2 or codigo = 3;
+
+-- Alteraração do banco "Bradesco" para "Santander" , obserção onde o banco "Bradesco" tem código "5" (Chave primaria)
+
+UPDATE banco SET nome = 'Santander' WHERE (`codigo` = '5');
+
+-- Alteração do telefone '(81) 3456 7893' para  '(81) 3423 7893' onde o cliente tem o cpf_cli = '555.444.777-33' e o telefone '(81) 3456 7893'
+
+update telefone_cliente set telefone ='(81) 3423 7893'
+where telefone = '(81) 3456 7893' and cpf_cli = '555.444.777-33';
+
+-- Excluisão do telefone = '(67) 3456 7899'
+
+delete from telefone_cliente where cpf_cli = '666.777.888-99'
+and telefone = '(67) 3456 7899';
+
+-- Listar todos os bancos que contenham a sílaba "CA". Observe que é em qualquer lugar
+
+select nome from banco
+where nome like '%ca%';
+
+-- Listar os banco que contenham a letra "B" no início
+
+select nome from banco
+where nome like 'B%';
+
+-- Listar o número da agência e endereço  da agência onde o número da agência são iguaais a  "562" e "3245"
+-- Pode ser assim:
+SELECT numero_agencia, endereco FROM agencia
+where numero_agencia = 562 or numero_agencia =3245;
+-- Ou assim;
+SELECT numero_agencia, endereco FROM sis_banco.agencia
+where numero_agencia in (562, 3245);
+
+-- Listar o núemro da conta e a data início - O distinct  somente as informações distintas
+select distinct numero_conta, data_inicio from historico
+where data_inicio between'1997-12-01' and '1997-12-30';
+
+-- Listar os nomes dos clientes em ordem crescente
+select nome from cliente
+order by nome;
+
+-- Listar os nomes dos clientes em ordem decrescente
+select nome from cliente
+order by nome desc;
+
+-- Listar os números das contas 863402  e 34565 e saldos delas
+
+select num_conta, saldo from conta
+where num_conta in (34565, 863402);
+
+-- Listar  o nome, telefone e CPF do cliente com o  numero de suas contas e data início
+-- Junção
+
+select cl.nome, h.numero_conta, cl.CPF,h.data_inicio, te.telefone
+from cliente cl, historico h, telefone_cliente te
+where  h.cpf_cli = cl.CPF
+and te.cpf_cli =cl.CPF;
+
+-- Liste o maior saldo da conta
+select max(saldo) from conta;
+
+--  Liste o menos saldo da conta
+select min(saldo) from conta;
+
+-- Liste a média salarial
+select avg(saldo) from conta;
+
+-- Listar  o nome, telefone e CPF do cliente com o  numero de suas contas e data início que tenham telefone com DDD 81
+-- Junção
+
+select cliente.nome, historico.numero_conta, cliente.CPF,historico.data_inicio, telefone_cliente.telefone
+ from cliente
+ inner join historico on (historico.cpf_cli = cliente.CPF)
+ inner join telefone_cliente on (telefone_cliente.cpf_cli =cliente.CPF)
+ where telefone like '%81%';
